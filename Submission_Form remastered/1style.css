@@ -1,0 +1,184 @@
+body {
+    background-image: url("GIF/Loop Space GIF.gif");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+
+    min-height: 100vh;
+
+    overflow-y: auto;
+}
+
+body::before {
+    content: "";
+
+    position: fixed;
+    inset: 0;
+
+    background-image: url("GIF/Loop Space GIF.gif");
+    background-size: cover;
+    background-position: center;
+
+    z-index: -1;
+}
+
+.submission-form {
+    width: 400px;
+    margin: auto;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.55);
+    /* backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); */
+    border-radius: 10px;
+    color: rgb(255, 255, 255);
+
+    animation: 
+        formEnter 1s cubic-bezier(0.16, 1, 0.3, 1) forwards,
+        glow 2s infinite alternate;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+select {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+    cursor: pointer;
+}
+
+select:focus{
+    outline: none;
+    border: 2px solid rgb(140, 2, 187);
+    box-shadow: 
+    0 0 10px rgb(140, 2, 187),
+    0 0 10px rgb(140, 2, 187);
+}
+
+input,
+textarea,
+select {
+    transition: 0.3s;
+}
+
+input[type="file"] {
+    width: 100%;
+    color: white;
+}
+
+input[type="file"]::file-selector-button {
+    background: #f9af01;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-right: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+input[type="file"]::file-selector-button:hover {
+    box-shadow:
+        0 0 10px #f9af01,
+        0 0 20px #f9af01;
+
+    transform: scale(1.05);
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+input,
+textarea {
+    transition: 0.3s;
+}
+
+input:focus,
+textarea:focus {
+
+    outline: none;
+
+    border: 2px solid rgb(140, 2, 187);
+
+    box-shadow:
+        0 0 10px rgb(140, 2, 187),
+        0 0 20px rgb(140, 2, 187);
+
+    transform: scale(1.02);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #585353;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: green;
+    border-radius: 5px;
+    color: white;
+    border: none;
+    transition: 0.3s;
+}
+
+button:hover {
+
+    transform: scale(1.05);
+
+    box-shadow:
+        0 0 15px lime,
+        0 0 30px lime;
+}
+
+@keyframes formEnter {
+
+    from {
+        opacity: 0;
+        transform:
+            perspective(1000px)
+            translateY(100px)
+            scale(3);
+    }
+
+    to {
+        opacity: 1;
+        transform:
+            perspective(1000px)
+            translateY(0)
+            scale(1);
+    }
+}
+
+@keyframes glow {
+
+    from {
+        box-shadow:
+            0 0 10px #28d7f6,
+            0 0 20px #28d7f6;
+    }
+
+    to {
+        box-shadow:
+            0 0 20px #28d7f6,
+            0 0 40px #28d7f6,
+            0 0 60px #28d7f6;
+    }
+}

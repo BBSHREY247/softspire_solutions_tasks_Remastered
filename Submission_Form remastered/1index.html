@@ -1,0 +1,46 @@
+<!DOCTYPE html5>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submission Form</title>
+    <link rel="stylesheet" href="1style.css">
+</head>
+
+<body>
+
+    <form class="submission-form">
+        <h1>Task Submission Form</h1>
+        <p>Your Name</p>
+        <label for="username"></label>
+        <input type="text" name="username" id="username" placeholder="Enter Your Name" required>
+        <p>Your Email</p>
+        <label for="email"></label>
+        <input type="email" name="email" id="email" placeholder="Enter Your Email Address" required>
+        <p>Your Role</p>
+        <select name="role" id="role">
+            <option value="" disabled selected>Choose Your Role in Company</option>
+            <option value="Full Stack Developer">Full Stack Developer</option>
+            <option value="Web Developer">Web Developer</option>
+        </select>
+        <p>Task Title</p>
+        <label for="Text"></label>
+        <input type="text" name="task" id="task" placeholder="Task Title" required>
+        <p>Add Task Files</p>
+        <input type="file" multiple>
+        <p>Description</p> 
+        <label for="Description"></label> 
+        <textarea name="Description" id="Description"
+            placeholder="Describe Your Task" rows="7" cols="35" required></textarea>
+        <br>
+        <br>
+        <button type="submit">
+            Submit
+        </button>
+    </form>
+
+</body>
+
+</html>
