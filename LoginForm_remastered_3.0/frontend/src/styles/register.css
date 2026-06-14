@@ -1,0 +1,54 @@
+/* Register form scoped styling */
+.register h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #1f2937;
+}
+
+.register label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+    text-align: left;
+}
+
+.register input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+}
+
+.register input:focus {
+    border-color: #2563eb;
+}
+
+.register button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.register button:hover {
+    background: #1d4ed8;
+}
+
+.register p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    text-align: center;
+    color: #6b7280;
+}
