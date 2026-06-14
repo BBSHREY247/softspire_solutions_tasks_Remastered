@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-function Login({switchPage}) {
+function Login({switchPage, onLoginSuccess, animPhase}) {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -34,6 +34,13 @@ function Login({switchPage}) {
             setAlertMsg(response.data.message || "Login Successful");
             setAlertType("success");
 
+            // Invoke success callback after a brief delay so the success alert is visible
+            setTimeout(() => {
+                if (onLoginSuccess) {
+                    onLoginSuccess(response.data.user, email, password);
+                }
+            }, 600);
+
         } catch (error) {
 
             console.error(error);
@@ -45,9 +52,18 @@ function Login({switchPage}) {
 
     };
 
+    // Build class names based on animation phase
+    let containerClass = "auth-container";
+    if (animPhase === "gif") {
+        containerClass += " bg-transparent";
+    } else if (animPhase === "flash") {
+        containerClass += " bg-white-flash";
+    }
+    const cardClass = "auth-card";
+
     return (
-        <div className="auth-container">
-            <div className="auth-card">
+        <div className={containerClass}>
+            <div className={cardClass}>
                 <form className="login" onSubmit={handleLogin} autoComplete="off">
                     <h1>Login</h1>
                     
