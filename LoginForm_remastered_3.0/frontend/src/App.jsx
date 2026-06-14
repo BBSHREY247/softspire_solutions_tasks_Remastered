@@ -39,11 +39,16 @@ function App() {
             setPhase("shatter");
         }, 2400);
 
-        // ── PHASE 4 (5200ms): Transition to Dashboard ──
+        // Stop sound slightly earlier to cut off the unwanted trailing noise (at 4700ms)
+        setTimeout(() => {
+            synth.stopAll();
+        }, 4100);
+
+        // ── PHASE 4 (5600ms): Transition to Dashboard ──
         setTimeout(() => {
             setLoggedIn(true);
             setPhase("done");
-        }, 5200);
+        }, 5600);
     };
 
     const handleLogout = () => {

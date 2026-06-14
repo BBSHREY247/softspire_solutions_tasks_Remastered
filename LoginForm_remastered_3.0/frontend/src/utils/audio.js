@@ -1,7 +1,8 @@
-// Web Audio API synthesizer for massive, heavy anime-style sound effects
+// Web Audio API synthesizer for whoosh and loader for custom mp3 sound effects
 class SoundSynth {
     constructor() {
         this.ctx = null;
+        this.audio = null;
     }
 
     init() {
@@ -14,7 +15,7 @@ class SoundSynth {
         }
     }
 
-    // Play a dramatic anime whoosh sound (moving wind filter on white noise + rumble)
+    // Play synthesized whoosh sound at login click
     playWhoosh() {
         try {
             this.init();
@@ -74,96 +75,30 @@ class SoundSynth {
         }
     }
 
-    // Play a massive destructive punch impact + metallic/glass shatter sound
+    // Play the user's custom sound_effect.mp3
     playImpact() {
         try {
-            this.init();
-            const audioCtx = this.ctx;
-            const now = audioCtx.currentTime;
-
-            // 1. MASSIVE SUB-BASS BOOM (The Punch Impact)
-            const subOsc = audioCtx.createOscillator();
-            const subGain = audioCtx.createGain();
-            subOsc.type = "sine";
-            subOsc.frequency.setValueAtTime(150, now);
-            subOsc.frequency.exponentialRampToValueAtTime(35, now + 0.6); // Deep bass drop
-
-            subGain.gain.setValueAtTime(2.2, now);
-            subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.85);
-
-            subOsc.connect(subGain);
-            subGain.connect(audioCtx.destination);
-            subOsc.start(now);
-            subOsc.stop(now + 0.9);
-
-            // 2. MID-FREQUENCY CRUNCH (Flesh & Wall destruction)
-            const crunchOsc = audioCtx.createOscillator();
-            const crunchGain = audioCtx.createGain();
-            crunchOsc.type = "sawtooth";
-            crunchOsc.frequency.setValueAtTime(220, now);
-            crunchOsc.frequency.linearRampToValueAtTime(80, now + 0.35);
-
-            crunchGain.gain.setValueAtTime(0.9, now);
-            crunchGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-
-            crunchOsc.connect(crunchGain);
-            crunchGain.connect(audioCtx.destination);
-            crunchOsc.start(now);
-            crunchOsc.stop(now + 0.45);
-
-            // 3. LOUD DESTRUCTIVE GLASS SHATTER (Irregular high-frequency cracks)
-            const shardFrequencies = [980, 1420, 2400, 3900, 5200, 7500];
-            shardFrequencies.forEach((freq, index) => {
-                const osc = audioCtx.createOscillator();
-                const gainNode = audioCtx.createGain();
-                osc.type = "sawtooth";
-                osc.frequency.setValueAtTime(freq, now);
-                
-                // Add minor pitch modulation for glass tension cracking
-                osc.frequency.linearRampToValueAtTime(freq * 0.75, now + 0.3 + (index * 0.05));
-
-                // Add random delay to each shard crack so it's a realistic shatter roll
-                const startDelay = index * 0.02;
-                const decayDuration = 0.4 + (index * 0.1);
-
-                gainNode.gain.setValueAtTime(0.001, now);
-                gainNode.gain.linearRampToValueAtTime(0.4, now + startDelay + 0.01);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, now + startDelay + decayDuration);
-
-                osc.connect(gainNode);
-                gainNode.connect(audioCtx.destination);
-                osc.start(now + startDelay);
-                osc.stop(now + startDelay + decayDuration + 0.1);
-            });
-
-            // 4. CRACKING SURFACE WHITE NOISE BURST
-            const bufferSize = audioCtx.sampleRate * 1.5;
-            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-            const data = buffer.getChannelData(0);
-            for (let i = 0; i < bufferSize; i++) {
-                data[i] = Math.random() * 2 - 1;
+            if (this.audio) {
+                this.audio.pause();
+                this.audio.currentTime = 0;
             }
-
-            const noiseSource = audioCtx.createBufferSource();
-            noiseSource.buffer = buffer;
-
-            const highpass = audioCtx.createBiquadFilter();
-            highpass.type = "highpass";
-            highpass.frequency.setValueAtTime(1500, now);
-
-            const noiseGain = audioCtx.createGain();
-            noiseGain.gain.setValueAtTime(1.1, now);
-            noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
-
-            noiseSource.connect(highpass);
-            highpass.connect(noiseGain);
-            noiseGain.connect(audioCtx.destination);
-
-            noiseSource.start(now);
-            noiseSource.stop(now + 1.3);
-
+            this.audio = new Audio("/sound_effect.mp3");
+            this.audio.volume = 1.0;
+            this.audio.play();
         } catch (e) {
-            console.error("Audio Synthesis Error: ", e);
+            console.error("Error playing sound_effect.mp3:", e);
+        }
+    }
+
+    // Stop all sound playback
+    stopAll() {
+        try {
+            if (this.audio) {
+                this.audio.pause();
+                this.audio.currentTime = 0;
+            }
+        } catch (e) {
+            console.error("Error stopping sound:", e);
         }
     }
 }
