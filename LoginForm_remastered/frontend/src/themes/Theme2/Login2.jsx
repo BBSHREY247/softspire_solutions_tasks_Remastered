@@ -107,7 +107,7 @@ function Login2({ switchPage, onLoginSuccess, email, setEmail, password, setPass
           </div>
 
           {/* Offline Mode Toggle */}
-          <div 
+          {/* <div 
             className="demo-toggle-container"
             onClick={() => setIsOfflineMode(!isOfflineMode)}
           >
@@ -118,7 +118,7 @@ function Login2({ switchPage, onLoginSuccess, email, setEmail, password, setPass
               onChange={() => {}} // handled by parent container click
             />
             <span className="demo-label">Offline Demo Mode</span>
-          </div>
+          </div> */}
 
           {/* Hidden button programmatically clicked by door handle */}
           <button type="submit" id="fridge-submit-btn" style={{ display: "none" }} />
