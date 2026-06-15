@@ -1,0 +1,1818 @@
+.theme-fridge {
+/* Source: global.css */
+/* Global reset and layout styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+&,
+&,
+& {
+    width: 100%;
+    min-height: 100vh;
+}
+
+& {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f9;
+}
+
+/* Shared Authentication Layout */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Shared interactive button link */
+.link-btn {
+    background: none !important;
+    color: #2563eb !important;
+    width: auto !important;
+    padding: 0 !important;
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+/* Alert notifications styling */
+.alert-box {
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.alert-error {
+    background-color: #fee2e2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+}
+
+.alert-success {
+    background-color: #d1fae5;
+    border: 1px solid #6ee7b7;
+    color: #065f46;
+}
+
+
+:root {
+  --fridge-metal-light: #f1f5f9;
+  --fridge-metal-mid: #cbd5e1;
+  --fridge-metal-dark: #64748b;
+  --fridge-metal-shadow: #334155;
+  --fridge-accent: #0284c7;
+  --led-glow: rgba(254, 240, 138, 0.85);
+  /* warm light */
+  --led-glow-cool: rgba(224, 242, 254, 0.85);
+  /* cool light */
+  --wood-color: #854d0e;
+  --paper-color: #fafaf9;
+}
+
+/* Base resets & Container */
+.fridge-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+  font-family: 'Outfit', sans-serif;
+  color: #f8fafc;
+  overflow: hidden;
+  padding: 40px 20px;
+  position: relative;
+}
+
+/* ═══════════════════════════════════════
+   FULLSCREEN FRIDGE INTERIOR OVERLAY
+   ═══════════════════════════════════════ */
+
+.fridge-interior-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.38);
+  transform-origin: center center;
+  transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), transform 1.5s cubic-bezier(0.34, 1.25, 0.64, 1);
+  /* dark outer surround mimicking the fridge cabinet edges */
+  background: #050508;
+}
+
+.fridge-interior-fullscreen.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: all;
+}
+
+/* 3D perspective room container */
+.fi-room {
+  position: absolute;
+  inset: 0;
+  perspective: 900px;
+  perspective-origin: 50% 42%;
+  overflow: hidden;
+  /* warm ambient glow radiating from top-center */
+  background:
+    radial-gradient(ellipse 70% 40% at 50% 0%, rgba(255, 160, 60, 0.28) 0%, transparent 70%),
+    linear-gradient(to bottom,
+      #0d0b08 0%,
+      #120e09 30%,
+      #0f0c09 60%,
+      #09080a 100%);
+}
+
+/* Top LED strip housing */
+.fi-led-strip {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 260px;
+  height: 18px;
+  background: linear-gradient(to right, #1e1a14, #3d3020, #1e1a14);
+  border-radius: 0 0 12px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.fi-led-dome {
+  width: 220px;
+  height: 10px;
+  border-radius: 50px;
+  background: linear-gradient(to right, #ff8c20, #ffe0a0, #ff8c20);
+  box-shadow:
+    0 0 18px 8px rgba(255, 160, 60, 0.9),
+    0 0 50px 20px rgba(255, 120, 20, 0.55),
+    0 0 100px 40px rgba(255, 90, 10, 0.25);
+  animation: ledFlicker 4s infinite ease-in-out;
+}
+
+
+
+/* 3D perspective side walls */
+.fi-wall {
+  position: absolute;
+  background: linear-gradient(to bottom, #1a1510, #0d0b08);
+  pointer-events: none;
+}
+
+.fi-wall-left {
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 9vw;
+  background: linear-gradient(to right,
+      #050405 0%,
+      #110e0a 60%,
+      transparent 100%);
+  transform-origin: left center;
+  transform: rotateY(12deg);
+  z-index: 5;
+}
+
+.fi-wall-right {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 9vw;
+  background: linear-gradient(to left,
+      #050405 0%,
+      #110e0a 60%,
+      transparent 100%);
+  transform-origin: right center;
+  transform: rotateY(-12deg);
+  z-index: 5;
+}
+
+.fi-wall-top {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6vh;
+  background: linear-gradient(to bottom,
+      #050405 0%,
+      #100d09 60%,
+      transparent 100%);
+  transform-origin: top center;
+  transform: rotateX(-10deg);
+  z-index: 6;
+}
+
+.fi-wall-bottom {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6vh;
+  background: linear-gradient(to top,
+      #050405 0%,
+      #0e0b08 60%,
+      transparent 100%);
+  transform-origin: bottom center;
+  transform: rotateX(10deg);
+  z-index: 6;
+}
+
+/* Inner back-wall horizontal shelf lines */
+.fi-room::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(to bottom,
+      transparent 0px,
+      transparent 139px,
+      rgba(255, 140, 30, 0.12) 140px,
+      rgba(255, 140, 30, 0.12) 143px);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Subtle vertical wire reflections on back wall */
+.fi-room::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(to right,
+      transparent 0px,
+      transparent 59px,
+      rgba(255, 200, 100, 0.04) 60px,
+      rgba(255, 200, 100, 0.04) 62px);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Content area inside the fullscreen interior */
+.fi-content {
+  position: absolute;
+  inset: 18px 9vw 6vh 9vw;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Stage wrapper for the small fridge — fades out when fullscreen is active */
+.fridge-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 1;
+  transform: scale(1);
+}
+
+.fridge-stage.hidden-stage {
+  opacity: 0;
+  transform: scale(0.9);
+  pointer-events: none;
+}
+
+.fridge-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.fridge-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 8px;
+  letter-spacing: -0.05em;
+}
+
+.fridge-header p {
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+/* Audio control toggle floating */
+.audio-control-floating {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+}
+
+.audio-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(4px);
+}
+
+.audio-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+/* Fridge container structure with perspective */
+.fridge-container {
+  position: relative;
+  width: 440px;
+  height: 680px;
+  perspective: 1600px;
+  perspective-origin: 50% 50%;
+  margin: 0 auto;
+  transition: transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-style: preserve-3d;
+}
+
+/* zoomed-in class no longer used — replaced by fullscreen overlay */
+
+/* Fridge Chassis / Cabinet */
+.fridge-cabinet {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 50%, #94a3b8 100%);
+  border-radius: 24px;
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.5),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6),
+    inset 0 -10px 20px rgba(0, 0, 0, 0.2);
+  border: 4px solid #94a3b8;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fridge Interior Compartment - Matte Black/Dark */
+.fridge-interior {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  background: #08080a;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: inset 0 0 35px rgba(0, 0, 0, 0.95);
+  transition: background-color 0.8s ease, box-shadow 0.8s ease;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+
+/* Pseudo-element for realistic warm radial orange light projection */
+.fridge-interior::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 50% 10%, rgba(249, 115, 22, 0.45) 0%, rgba(0, 0, 0, 0) 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  z-index: 1;
+}
+
+/* Interior LED light on when open - Amber / Warm Orange glow */
+.fridge-interior.light-on {
+  background: linear-gradient(to bottom, #0c0b0a 0%, #15110d 50%, #0c0b0a 100%);
+  box-shadow:
+    inset 0 0 45px rgba(249, 115, 22, 0.35),
+    inset 0 0 15px rgba(0, 0, 0, 0.9);
+}
+
+.fridge-interior.light-on::before {
+  opacity: 1;
+}
+
+/* Refrigerator Light Source - Circular Dome Light at Top Back Center */
+.interior-led-dome {
+  height: 14px;
+  width: 55px;
+  margin: 0 auto 15px auto;
+  background: #334155;
+  border-radius: 50% / 10px 10px 30px 30px;
+  transition: all 0.5s ease;
+  z-index: 10;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+.light-on .interior-led-dome {
+  background: #ffedd5;
+  box-shadow:
+    0 0 25px #f97316,
+    0 0 45px rgba(249, 115, 22, 0.85),
+    inset 0 1px 1px #fff;
+}
+
+/* Frost overlay effect */
+.frost-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 1;
+}
+
+.light-on .frost-overlay {
+  opacity: 0;
+}
+
+/* Door 3D Container */
+.fridge-door-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transform-origin: 100% 50%;
+  transition: transform 2.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 2.0s ease-in-out;
+  z-index: 10;
+  opacity: 1;
+}
+
+.fridge-door-wrapper.open {
+  transform: rotateY(130deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fridge-door {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+/* Door Front Face with Brushed metal finish */
+.door-front {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 22px;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px;
+  z-index: 2;
+}
+
+.door-front.brushed-metal {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 50%, rgba(0, 0, 0, 0.15) 55%, rgba(0, 0, 0, 0.35) 100%),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.02) 0px, rgba(0, 0, 0, 0.02) 1px, transparent 1px, transparent 2px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.06) 0px, rgba(255, 255, 255, 0.06) 1px, transparent 1px, transparent 2px),
+    linear-gradient(to right, #94a3b8, #cbd5e1 35%, #f8fafc 50%, #cbd5e1 65%, #94a3b8);
+  box-shadow:
+    inset 2px 2px 0px rgba(255, 255, 255, 0.8),
+    inset -2px -2px 6px rgba(0, 0, 0, 0.3),
+    5px 15px 35px rgba(0, 0, 0, 0.45);
+  border: 1px solid #94a3b8;
+}
+
+.door-front-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.door-login-container {
+  width: 100%;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 32px;
+  margin-top: 10px;
+  z-index: 5;
+  transition: transform 0.3s ease;
+}
+
+
+
+.shake-form {
+  animation: shakeForm 0.5s ease-in-out;
+}
+
+/* Door Back Face */
+.door-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 70%, #f1f5f9 100%);
+  border-radius: 22px;
+  transform: rotateY(180deg);
+  backface-visibility: hidden;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.15);
+  border: 4px solid #cbd5e1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 1;
+}
+
+/* Door rubber gasket seal */
+.door-back::after {
+  content: '';
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  border: 8px solid #475569;
+  border-radius: 12px;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+/* Outer Door elements */
+/* Brand Logo */
+.fridge-logo {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #64748b;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: 10px;
+  text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.6);
+}
+
+/* Sleek status LED dot indicator on top of the door */
+.fridge-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  /* locked red */
+  box-shadow: 0 0 8px #ef4444;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.fridge-status-dot.unlocked {
+  background: #22c55e;
+  /* green unlocked */
+  box-shadow: 0 0 8px #22c55e;
+}
+
+/* Fridge Magnets */
+.magnets-container {
+  position: relative;
+  flex-grow: 1;
+  width: 100%;
+}
+
+.magnet {
+  position: absolute;
+  cursor: grab;
+  font-size: 1.8rem;
+  filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.3));
+  transition: transform 0.2s ease;
+  user-select: none;
+}
+
+.magnet:hover {
+  transform: scale(1.15) rotate(5deg);
+}
+
+.magnet:active {
+  cursor: grabbing;
+}
+
+.magnet-1 {
+  top: 20px;
+  left: 60px;
+}
+
+.magnet-2 {
+  top: 70px;
+  right: 20px;
+}
+
+.magnet-3 {
+  top: 180px;
+  left: 70px;
+}
+
+.magnet-4 {
+  top: 240px;
+  right: 40px;
+}
+
+/* Magnet Notepad */
+.magnet-notepad {
+  position: absolute;
+  top: 110px;
+  left: 55px;
+  width: 110px;
+  background: #fef08a;
+  color: #1e293b;
+  padding: 10px;
+  font-family: 'Caveat', cursive;
+  font-size: 0.95rem;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.15);
+  transform: rotate(-4deg);
+  border-bottom-right-radius: 12px;
+  border-left: 2px solid rgba(0, 0, 0, 0.05);
+}
+
+.magnet-notepad::before {
+  content: '📌';
+  position: absolute;
+  top: -12px;
+  left: 45%;
+  font-size: 1rem;
+}
+
+/* Door Handle (Login / Register trigger) */
+.door-handle-container {
+  position: absolute;
+  left: 24px; /* Mount on the front face, near left edge */
+  top: 220px;
+  height: 240px;
+  width: 24px; /* Slimmer, taller bar handle */
+  z-index: 15;
+  perspective: 600px;
+}
+
+.door-handle {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to right, #cbd5e1 0%, #cbd5e1 15%, #f1f5f9 35%, #94a3b8 75%, #64748b 100%);
+  border-radius: 6px;
+  border: 1px solid #94a3b8;
+  box-shadow:
+    5px 8px 15px rgba(0, 0, 0, 0.35),
+    inset -1px -1px 3px rgba(0, 0, 0, 0.2),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  transform-origin: right center;
+}
+
+/* Handle mount brackets (mounted to the door front surface behind the bar) */
+.door-handle::before,
+.door-handle::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 12px;
+  background: #64748b;
+  border-radius: 2px;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 0.4);
+  z-index: -1;
+}
+
+.door-handle::before {
+  top: -10px;
+}
+
+.door-handle::after {
+  bottom: -10px;
+}
+
+/* Handle text / glow */
+.handle-glow-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ef4444;
+  /* locked red */
+  box-shadow: 0 0 10px #ef4444;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+}
+
+.open .handle-glow-indicator {
+  background: #22c55e;
+  /* green when open */
+  box-shadow: 0 0 10px #22c55e;
+}
+
+.handle-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.door-handle:hover {
+  transform: rotateY(12deg) translateZ(8px);
+  box-shadow:
+    8px 12px 20px rgba(0, 0, 0, 0.45),
+    inset -1px -1px 3px rgba(0, 0, 0, 0.2),
+    inset 1px 1px 3px rgba(255, 255, 255, 0.8);
+}
+
+.door-handle:active {
+  transform: rotateY(18deg) scaleY(0.98) translateZ(4px);
+}
+
+/* Inside Door Components */
+
+/* Clipboard Form container */
+.clipboard-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.clipboard {
+  width: 95%;
+  height: 90%;
+  background: var(--wood-color);
+  border-radius: 12px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  padding: 18px 12px 12px 12px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Wooden board texture lines */
+.clipboard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(rgba(0, 0, 0, 0.03) 0px, rgba(0, 0, 0, 0.03) 2px, transparent 2px, transparent 4px);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.clipboard-clip {
+  width: 90px;
+  height: 30px;
+  background: linear-gradient(to bottom, #e2e8f0, #94a3b8);
+  border-radius: 6px 6px 0 0;
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clipboard-clip::after {
+  content: '';
+  width: 40px;
+  height: 8px;
+  background: #475569;
+  border-radius: 4px;
+}
+
+.clipboard-paper {
+  background: var(--paper-color);
+  flex-grow: 1;
+  border-radius: 6px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+  padding: 16px;
+  color: #1e293b;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-left: 1px solid rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: auto;
+}
+
+/* Paper rule lines */
+.clipboard-paper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 30px;
+  width: 1px;
+  background: rgba(239, 68, 68, 0.3);
+  /* margin line */
+}
+
+/* Form details */
+.fridge-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.fridge-form h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 12px;
+  color: #0369a1;
+  font-family: 'Outfit', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 8px;
+  padding-left: 20px;
+  /* shift right of red line */
+}
+
+.form-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form-group input {
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  border-bottom: 1.5px dashed #94a3b8;
+  font-size: 0.95rem;
+  color: #0f172a;
+  outline: none;
+  font-family: 'Outfit', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  border-bottom: 1.5px solid #0284c7;
+  background: rgba(14, 165, 233, 0.05);
+}
+
+.demo-toggle-container {
+  display: flex;
+  align-items: center;
+  margin: 6px 0 12px 20px;
+  cursor: pointer;
+}
+
+.demo-toggle-container input {
+  margin-right: 8px;
+  cursor: pointer;
+}
+
+.demo-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #b45309;
+  /* amber */
+}
+
+.submit-btn {
+  background: linear-gradient(to right, #0284c7, #0369a1);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+  box-shadow: 0 4px 6px rgba(2, 132, 199, 0.2);
+}
+
+.submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(2, 132, 199, 0.3);
+  filter: brightness(1.05);
+}
+
+.submit-btn:active {
+  transform: translateY(1px);
+}
+
+.form-switch-p {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 8px;
+}
+
+.form-switch-p button {
+  background: none;
+  border: none;
+  color: #0284c7;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+}
+
+.form-switch-p button:hover {
+  text-decoration: underline;
+}
+
+/* Welcome Sticky Note inside door */
+.sticky-note {
+  position: absolute;
+  top: 40px;
+  width: 180px;
+  background: #fef08a;
+  /* Neon yellow post-it */
+  box-shadow:
+    3px 6px 10px rgba(0, 0, 0, 0.15),
+    inset 0 0 20px rgba(0, 0, 0, 0.05);
+  padding: 16px;
+  transform: rotate(-6deg);
+  color: #1e3a8a;
+  font-family: 'Caveat', cursive;
+  font-size: 1.25rem;
+  border-bottom-right-radius: 20px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 8;
+  border-left: 2px solid rgba(0, 0, 0, 0.03);
+}
+
+.sticky-note::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 12px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.sticky-note-title {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.1em;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.sticky-note-name {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.1;
+  word-wrap: break-word;
+  max-width: 100%;
+}
+
+.sticky-note-footer {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-top: 8px;
+}
+
+/* Fridge Interior Layout (Shelves) */
+.interior-shelves {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+  z-index: 2;
+  position: relative;
+}
+
+/* Redesigned Minimal Glassmorphic Smart Panel */
+.smart-panel-container {
+  width: 90%;
+  max-width: 340px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+}
+
+.smart-panel {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(249, 115, 22, 0.28);
+  border-radius: 16px;
+  box-shadow:
+    0 15px 35px rgba(0, 0, 0, 0.5),
+    0 0 15px rgba(249, 115, 22, 0.15);
+  padding: 24px 20px;
+  width: 100%;
+}
+
+.smart-panel h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 15px;
+  color: #f97316;
+  text-shadow: 0 0 8px rgba(249, 115, 22, 0.45);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.smart-panel .form-group {
+  margin-bottom: 12px;
+  padding-left: 0;
+}
+
+.smart-panel .form-group label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.smart-panel .form-group input {
+  padding: 8px 10px;
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid rgba(249, 115, 22, 0.2);
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: #f1f5f9;
+  outline: none;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.smart-panel .form-group input:focus {
+  border-color: #f97316;
+  background: rgba(249, 115, 22, 0.05);
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.25);
+}
+
+.smart-panel .demo-toggle-container {
+  display: flex;
+  align-items: center;
+  margin: 10px 0 16px 0;
+  cursor: pointer;
+}
+
+.smart-panel .demo-toggle-container input {
+  margin-right: 8px;
+  cursor: pointer;
+  accent-color: #f97316;
+}
+
+.smart-panel .demo-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #f97316;
+  text-shadow: 0 0 4px rgba(249, 115, 22, 0.2);
+}
+
+.handle-instruction-msg {
+  text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #f97316;
+  margin: 12px 0;
+  padding: 8px;
+  border: 1px dashed rgba(249, 115, 22, 0.3);
+  border-radius: 6px;
+  background: rgba(249, 115, 22, 0.04);
+  letter-spacing: 0.05em;
+  animation: pulseInstruction 2s infinite ease-in-out;
+}
+
+
+
+.smart-panel .form-switch-p {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.smart-panel .form-switch-p button {
+  background: none;
+  border: none;
+  color: #f97316;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 4px;
+  transition: all 0.2s ease;
+}
+
+.smart-panel .form-switch-p button:hover {
+  text-decoration: underline;
+  text-shadow: 0 0 6px rgba(249, 115, 22, 0.4);
+}
+
+/* Dashboard Layout Styles */
+.dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  justify-content: space-between;
+  overflow: hidden;
+  background: transparent;
+}
+
+/* Scrollable container for infinite shelves */
+.shelves-scroll-container {
+  flex-grow: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 20px 40px 10px 40px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(249, 115, 22, 0.4) transparent;
+}
+
+/* Custom chrome scrollbar matching orange warm theme */
+.shelves-scroll-container::-webkit-scrollbar {
+  width: 5px;
+}
+
+.shelves-scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.shelves-scroll-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #f97316, #ea580c);
+  border-radius: 3px;
+  box-shadow: 0 0 6px rgba(249, 115, 22, 0.4);
+}
+
+.shelves-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #ea580c;
+}
+
+/* System Monitor Plaque on Wall */
+.fridge-control-panel {
+  background: rgba(10, 10, 12, 0.85);
+  border: 1.5px solid rgba(249, 115, 22, 0.35);
+  border-radius: 12px;
+  padding: 20px 28px;
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.7),
+    0 0 15px rgba(249, 115, 22, 0.2),
+    inset 0 0 10px rgba(0, 0, 0, 0.9);
+  margin-bottom: 28px;
+  font-family: 'Share Tech Mono', monospace;
+  z-index: 10;
+  max-width: 900px;
+  width: 100%;
+  align-self: center;
+}
+
+.panel-header {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f97316;
+  text-shadow: 0 0 8px rgba(249, 115, 22, 0.55);
+  letter-spacing: 0.1em;
+  text-align: center;
+  border-bottom: 1.5px solid rgba(249, 115, 22, 0.25);
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.panel-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.05);
+  padding-bottom: 4px;
+}
+
+.panel-row:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.panel-label {
+  color: #64748b;
+  font-weight: 600;
+}
+
+.panel-value {
+  color: #ffedd5;
+  font-weight: bold;
+}
+
+.panel-value.active-status {
+  color: #4ade80;
+  text-shadow: 0 0 6px rgba(74, 222, 128, 0.4);
+}
+
+.panel-value.mode-status {
+  color: #fbbf24;
+  text-shadow: 0 0 6px rgba(251, 191, 36, 0.4);
+}
+
+/* Realistic Metal Wire Shelves Grid */
+.fridge-shelf-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+  height: 130px;
+  padding-bottom: 6px;
+  width: 100%;
+}
+
+/* Wire lines vertical in grid behind shelf */
+.shelf-wire-grid {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0 15px;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+.light-on .shelf-wire-grid {
+  opacity: 0.5;
+}
+
+.wire-line {
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.45) 80%, rgba(249, 115, 22, 0.4));
+  box-shadow: 1px 0 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Horizontal wire shelf bar */
+.wire-shelf {
+  height: 10px;
+  width: 100%;
+  /* Wire grid texture */
+  background:
+    linear-gradient(to right, #475569 2px, transparent 2px) 0 0 / 12px 100%,
+    linear-gradient(to bottom, #94a3b8 0%, #475569 100%);
+  border-bottom: 2px solid #334155;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.7),
+    0 8px 12px rgba(249, 115, 22, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border-radius: 2px;
+  position: relative;
+  z-index: 3;
+}
+
+.light-on .wire-shelf {
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.65),
+    0 8px 12px rgba(249, 115, 22, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.infinite-scroll-footer {
+  text-align: center;
+  padding: 16px 0;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #475569;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  animation: pulseFooter 2.2s infinite ease-in-out;
+}
+
+
+
+/* Fixed Bottom Drawers container styling */
+.crisper-drawers-fixed {
+  height: 130px;
+  display: flex;
+  gap: 16px;
+  padding: 8px 40px;
+  background: rgba(10, 10, 12, 0.6);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.05);
+  border-radius: 0 0 0 0;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.light-on .crisper-drawers-fixed {
+  background: rgba(20, 16, 12, 0.7);
+  border-top-color: rgba(249, 115, 22, 0.25);
+  box-shadow:
+    0 -5px 15px rgba(0, 0, 0, 0.4),
+    0 -2px 10px rgba(249, 115, 22, 0.08);
+}
+
+.vegetable-drawer {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow:
+    inset 0 2px 4px rgba(255, 255, 255, 0.05),
+    0 2px 4px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.light-on .vegetable-drawer {
+  background: rgba(249, 115, 22, 0.03);
+  border-color: rgba(249, 115, 22, 0.25);
+  box-shadow:
+    inset 0 3px 5px rgba(249, 115, 22, 0.15),
+    0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.drawer-pull {
+  width: 40px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.light-on .drawer-pull {
+  background: rgba(249, 115, 22, 0.4);
+  border-color: rgba(249, 115, 22, 0.2);
+}
+
+.drawer-items-visual-text {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #334155;
+  letter-spacing: 0.05em;
+  transition: color 0.3s ease;
+}
+
+.light-on .drawer-items-visual-text {
+  color: #ea580c;
+  text-shadow: 0 0 6px rgba(249, 115, 22, 0.3);
+}
+
+.drawer-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+.light-on .drawer-title {
+  color: #94a3b8;
+}
+
+/* Drawer open state (Slide down/forward) */
+.vegetable-drawer.pulled-out {
+  transform: translateY(6px) scale(1.01);
+  background: rgba(15, 23, 42, 0.95) !important;
+  border-color: #f97316 !important;
+  box-shadow:
+    0 8px 15px rgba(0, 0, 0, 0.6),
+    inset 0 2px 4px rgba(249, 115, 22, 0.2);
+  z-index: 12;
+}
+
+.vegetable-drawer.pulled-out .drawer-pull {
+  background: #f97316;
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+}
+
+/* Contents inside pulled out drawers */
+.drawer-content-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #0f172a;
+  color: #fff;
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  animation: slideInUp 0.3s ease;
+  z-index: 5;
+  border: 1.5px solid #f97316;
+}
+
+
+
+.drawer-settings-title {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #f97316;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+
+.setting-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.7rem;
+  margin-bottom: 6px;
+  font-family: 'Share Tech Mono', monospace;
+  color: #94a3b8;
+}
+
+.setting-btn-small {
+  background: #334155;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.65rem;
+  font-family: 'Share Tech Mono', monospace;
+  transition: all 0.2s ease;
+}
+
+.setting-btn-small:hover {
+  background: #f97316;
+  box-shadow: 0 0 6px rgba(249, 115, 22, 0.4);
+}
+
+.logout-switch-btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: bold;
+  background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  border: 1.5px solid #ef4444;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.35);
+  letter-spacing: 0.05em;
+}
+
+.logout-switch-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+  background: linear-gradient(135deg, #f87171 0%, #dc2626 100%);
+}
+
+.logout-switch-btn:active {
+  transform: scale(0.95);
+}
+
+.logout-text {
+  font-size: 0.6rem;
+  font-weight: bold;
+  color: #ef4444;
+  margin-top: 4px;
+  font-family: 'Share Tech Mono', monospace;
+}
+
+/* General overlay alerts/warnings inside fridge */
+.interior-alert {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(239, 68, 68, 0.9);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  text-align: center;
+  font-weight: bold;
+  z-index: 30;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+  animation: pulseAlert 1.5s infinite;
+}
+
+
+/* Source: login.css */
+/* Login form scoped styling */
+.login h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #1f2937;
+}
+
+.login label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+    text-align: left;
+}
+
+.login input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+}
+
+.login input:focus {
+    border-color: #2563eb;
+}
+
+.login button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login button:hover {
+    background: #1d4ed8;
+}
+
+.login p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    text-align: center;
+    color: #6b7280;
+}
+
+/* Source: register.css */
+/* Register form scoped styling */
+.register h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #1f2937;
+}
+
+.register label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #4b5563;
+    text-align: left;
+}
+
+.register input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+}
+
+.register input:focus {
+    border-color: #2563eb;
+}
+
+.register button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.register button:hover {
+    background: #1d4ed8;
+}
+
+.register p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    text-align: center;
+    color: #6b7280;
+}
+
+  .fridge-small-dashboard-wrap {
+    position: absolute;
+    top: 60px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.68);
+    transform-origin: top center;
+    animation: fadeInSmallDashboard 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+}
+
+
+/* --- ROOT LEVEL KEYFRAMES --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ledFlicker {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  48% {
+    opacity: 1;
+  }
+
+  49% {
+    opacity: 0.88;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  92% {
+    opacity: 1;
+  }
+
+  93% {
+    opacity: 0.93;
+  }
+
+  94% {
+    opacity: 1;
+  }
+}
+
+@keyframes shakeForm {
+
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+
+  20% {
+    transform: translateX(-8px) rotate(-1.5deg);
+  }
+
+  40% {
+    transform: translateX(6px) rotate(1deg);
+  }
+
+  60% {
+    transform: translateX(-6px) rotate(-1deg);
+  }
+
+  80% {
+    transform: translateX(4px) rotate(0.5deg);
+  }
+}
+
+@keyframes pulseInstruction {
+
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+    text-shadow: 0 0 8px rgba(249, 115, 22, 0.6);
+  }
+}
+
+@keyframes pulseFooter {
+
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 0.9;
+    color: #ea580c;
+    text-shadow: 0 0 6px rgba(249, 115, 22, 0.4);
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulseAlert {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes fadeInSmallDashboard {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 0.85;
+    transform: scale(0.68);
+  }
+}
