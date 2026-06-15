@@ -42,7 +42,7 @@ function App() {
         // Stop sound slightly earlier to cut off the unwanted trailing noise (at 4700ms)
         setTimeout(() => {
             synth.stopAll();
-        }, 4100);
+        }, 4200);
 
         // ── PHASE 4 (5600ms): Transition to Dashboard ──
         setTimeout(() => {
